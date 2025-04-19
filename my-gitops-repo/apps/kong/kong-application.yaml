@@ -1,33 +1,27 @@
-# gitops-repo/applicationsets/kong.yaml
+kubectl apply -f - <<EOF
 apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
+kind: Application
 metadata:
   name: kong
   namespace: argocd
+  labels:
+    argocd.argoproj.io/instance: kong
 spec:
-  generators:
-  - list:
-      elements:
-      - env: dev
-        cluster: in-cluster
-  template:
-    metadata:
-      name: kong-{{env}}
-    spec:
-      project: default
-      source:
-        repoURL: https://github.com/your-username/gitops-repo.git
-        targetRevision: HEAD
-        path: environments/{{env}}/kong
-        helm:
-          valueFiles:
-          - values.yaml
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: kong-{{env}}
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
+  destination:
+    namespace: kong
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: kong
+    repoURL: https://charts.konghq.com
+    targetRevision: 2.35.1
+    helm:
+      valueFiles:
+      - my-gitops-repo/environments/dev/kong/values.yaml  # Path should be absolute from repo root
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
