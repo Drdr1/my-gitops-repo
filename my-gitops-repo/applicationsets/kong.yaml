@@ -1,0 +1,33 @@
+# gitops-repo/applicationsets/kong.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kong
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - env: dev
+        cluster: in-cluster
+  template:
+    metadata:
+      name: kong-{{env}}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/Drdr1/my-gitops-repo.git
+        targetRevision: HEAD
+        path: environments/{{env}}/kong
+        helm:
+          valueFiles:
+          - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: kong-{{env}}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
