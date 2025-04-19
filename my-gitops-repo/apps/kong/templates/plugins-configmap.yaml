@@ -1,9 +1,0 @@
-# my-gitops-repo/apps/kong/templates/plugins-configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kong-plugins
-  namespace: kong
-data:
-  token-counter.lua: |
-    -- Your plugin code here
