@@ -1,0 +1,16 @@
+# my-gitops-repo/environments/dev/kong/values.yaml
+replicaCount: 2
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+image:
+  repository: kong
+  tag: "3.5.0"
+resources:
+  requests:
+    cpu: "500m"
+    memory: "512Mi"
+  limits:
+    cpu: "1000m"
+    memory: "1024Mi"

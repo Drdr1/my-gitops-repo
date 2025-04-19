@@ -1,0 +1,24 @@
+# my-gitops-repo/apps/kong/kong-application.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kong
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.konghq.com
+    targetRevision: 2.35.1  # Match your current version
+    chart: kong
+    helm:
+      valueFiles:
+      - ../../environments/{{env}}/kong/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kong
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
