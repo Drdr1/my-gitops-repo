@@ -1,24 +1,33 @@
-# my-gitops-repo/apps/kong/kong-application.yaml
+# gitops-repo/applicationsets/kong.yaml
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: kong
   namespace: argocd
 spec:
-  project: default
-  source:
-    repoURL: https://charts.konghq.com
-    targetRevision: 2.35.1  # Match your current version
-    chart: kong
-    helm:
-      valueFiles:
-      - ../../environments/{{env}}/kong/values.yaml
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: kong
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+  generators:
+  - list:
+      elements:
+      - env: dev
+        cluster: in-cluster
+  template:
+    metadata:
+      name: kong-{{env}}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/your-username/gitops-repo.git
+        targetRevision: HEAD
+        path: environments/{{env}}/kong
+        helm:
+          valueFiles:
+          - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: kong-{{env}}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
