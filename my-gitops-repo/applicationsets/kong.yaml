@@ -18,7 +18,7 @@ spec:
       source:
         repoURL: https://github.com/your-username/gitops-repo.git
         targetRevision: HEAD
-        path: environments/{{env}}/kong
+        path: environments/dev/kong
         helm:
           valueFiles:
           - values.yaml
