@@ -16,7 +16,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/your-username/gitops-repo.git
+        repoURL: https://github.com/Drdr1/my-gitops-repo.git
         targetRevision: HEAD
         path: environments/{{env}}/kong
         helm:
